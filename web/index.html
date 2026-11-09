@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10201a">
+  <title>Alderwick — A Living Village</title>
+  <link rel="icon" href="assets/crest.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="world" aria-label="Alderwick village"></canvas>
+  <div class="screen-grain" aria-hidden="true"></div>
+  <div class="vignette" aria-hidden="true"></div>
+
+  <div id="game-ui" class="hidden">
+    <header id="topbar">
+      <div class="brand">
+        <img src="assets/crest.svg" alt="" class="crest">
+        <div>
+          <h1>Alderwick</h1>
+          <p id="location-line">On the River Fenn</p>
+        </div>
+      </div>
+
+      <div id="clock" aria-label="In-game clock">
+        <div class="clock-dial" aria-hidden="true">
+          <div class="dial-ring"></div>
+          <div class="dial-arc" id="dial-arc"></div>
+          <div class="dial-hand" id="dial-hand"></div>
+          <div class="dial-sun" id="dial-sun"></div>
+        </div>
+        <div class="clock-copy">
+          <div id="clock-time">07:00</div>
+          <div id="clock-day">Day 1 · Morning</div>
+        </div>
+        <div class="speed-controls" role="group" aria-label="Time speed">
+          <button class="speed-btn" data-speed="0" title="Pause (P)">II</button>
+          <button class="speed-btn active" data-speed="1" title="Normal speed">1x</button>
+          <button class="speed-btn" data-speed="2" title="Double speed">2x</button>
+          <button class="speed-btn" data-speed="4" title="Fast forward">4x</button>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <button class="icon-btn" id="help-btn" title="Help and controls">?</button>
+      </div>
+    </header>
+
+    <div id="tracker" class="hidden">
+      <span class="tracker-diamond" aria-hidden="true"></span>
+      <span id="tracker-text"></span>
+      <button id="tracker-clear" title="Stop tracking">×</button>
+    </div>
+
+    <nav id="side-rail" aria-label="Village journal">
+      <button class="rail-btn" data-panel="people" title="The folk of Alderwick (P)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.4 2.7-5.6 6-5.6s6 2.2 6 5.6M16.5 7.4a2.7 2.7 0 1 1 0 5.4M17 14.6c2.3.3 4 2.1 4 4.7"/></svg>
+        <span>Folk</span>
+        <b class="rail-badge hidden" id="badge-folk"></b>
+      </button>
+      <button class="rail-btn" data-panel="journal" title="Quest journal (J)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3.5h11.5A2.5 2.5 0 0 1 19 6v15H7a2 2 0 0 1-2-2V3.5Z"/><path d="M5 16.5h14M8.5 7.5h6M8.5 11h4"/></svg>
+        <span>Journal</span>
+        <b class="rail-badge hidden" id="badge-journal"></b>
+      </button>
+      <button class="rail-btn" data-panel="hero" title="Your adventurer (C)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4.8 6v5.2c0 4.6 3 8 7.2 9.8 4.2-1.8 7.2-5.2 7.2-9.8V6L12 3Z"/><path d="M9 11.5l2.2 2.2L15.5 9"/></svg>
+        <span>Hero</span>
+      </button>
+      <button class="rail-btn" data-panel="help" title="Help and controls">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.7 9a2.4 2.4 0 1 1 3.4 2.2c-.7.3-1.1 1-1.1 1.8v.4M12 17.2h.01"/></svg>
+        <span>Help</span>
+      </button>
+    </nav>
+
+    <aside id="panel" class="hidden" aria-label="Game panel">
+      <header class="panel-head">
+        <div>
+          <p class="eyebrow" id="panel-eyebrow">ALDERWICK</p>
+          <h2 id="panel-title">The Folk</h2>
+        </div>
+        <button id="panel-close" class="icon-btn" title="Close (Esc)">×</button>
+      </header>
+      <div id="panel-content"></div>
+    </aside>
+
+    <div id="hud">
+      <div id="hero-hud" class="hud-card">
+        <div id="hero-portrait" class="hero-portrait"></div>
+        <div class="hero-status">
+          <div class="hero-titlerow">
+            <div>
+              <p id="hud-name">—</p>
+              <p id="hud-class">—</p>
+            </div>
+            <span id="hud-level">Lv 1</span>
+          </div>
+          <div class="bar hp"><div id="hp-fill" class="bar-fill"></div><span id="hp-text">100 / 100</span></div>
+          <div class="bar stamina"><div id="stamina-fill" class="bar-fill"></div><span id="stamina-text">100 / 100</span></div>
+          <div class="xp-row"><div class="bar xp"><div id="xp-fill" class="bar-fill"></div></div><span id="xp-text">0 / 50 XP</span></div>
+        </div>
+      </div>
+
+      <div id="hud-coins" class="hud-card coin-card">
+        <span class="coin-mark" aria-hidden="true"></span>
+        <div><b id="gold-text">20</b><span>gold</span></div>
+      </div>
+
+      <div id="hud-hints">
+        <span><kbd>WASD</kbd> move</span>
+        <span><kbd>E</kbd> interact</span>
+        <span><kbd>F</kbd> strike</span>
+        <span><kbd>Q</kbd> gift</span>
+      </div>
+    </div>
+
+    <div id="prompt" class="hidden"><kbd>E</kbd><span id="prompt-text"></span></div>
+    <div id="ability-chip" class="hidden"><span id="ability-key">Q</span><span id="ability-name">Ability</span><div class="ability-cool"></div></div>
+    <div id="toasts" aria-live="polite"></div>
+    <div id="fade"></div>
+  </div>
+
+  <section id="start-screen">
+    <div class="start-topline">
+      <span class="rule"></span>
+      <p>A LIVING VILLAGE TALE</p>
+      <span class="rule"></span>
+    </div>
+    <div class="start-brand">
+      <img src="assets/crest.svg" alt="" class="start-crest">
+      <h1>Alderwick</h1>
+      <p class="start-sub">On the River Fenn, where the Elderwood keeps its own counsel.</p>
+      <p class="start-lore">Four families share this bend of the river. Bakers, wardens, ferryfolk and forgehands live by the clock of the sun — working, eating, gossiping and sleeping. Stay long enough, and you can learn the shape of every day. Choose who you are before you walk the gate.</p>
+    </div>
+    <div id="hero-cards" class="hero-cards"></div>
+    <div class="start-actions">
+      <button id="begin-btn" class="primary-btn" disabled>Choose an adventurer</button>
+      <p class="start-controls">WASD to walk · E to speak · F to strike · Q for your gift · P / J / C for the village books</p>
+    </div>
+    <div class="start-footer">
+      <span>A village that keeps its own hours.</span>
+      <span>Forest, river, beast and neighbour.</span>
+    </div>
+  </section>
+
+  <div id="modal-layer" class="hidden">
+    <div id="modal" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <div id="boot-error" class="hidden"></div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

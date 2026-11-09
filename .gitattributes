@@ -1,0 +1,18 @@
+* text=auto
+
+*.cs        text diff=csharp
+*.md        text
+*.asmdef    text
+*.json      text
+*.shader    text
+*.ps1       text
+*.py        text
+
+*.png       binary
+*.jpg       binary
+*.fbx       binary
+*.dll       binary
+*.exe       binary
+*.assets    binary
+*.resS      binary
+*.unity3d   binary

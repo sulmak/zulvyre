@@ -1,0 +1,10 @@
+{
+  "name": "alderwick",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Alderwick - a living village on the River Fenn",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  }
+}

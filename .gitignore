@@ -1,0 +1,35 @@
+# Unity generated
+/[Ll]ibrary/
+/[Tt]emp/
+/[Oo]bj/
+/[Ll]ogs/
+/[Uu]ser[Ss]ettings/
+/[Bb]uilds/
+/[Aa]ssets/AssetStoreTools*
+
+# IDE and solution files Unity rewrites
+*.csproj
+*.unityproj
+*.sln
+*.user
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+.vs/
+.idea/
+
+# Test captures from the input harnesses (the canonical tours in Shots/flow, world and humans stay)
+/Shots/live-*.png
+
+# Python caches from the Maya tools
+__pycache__/
+*.pyc
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store
